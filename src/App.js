@@ -1,24 +1,44 @@
-import logo from './logo.svg';
+import { Route, Routes, Navigate } from 'react-router-dom';
 import './App.css';
+
+import { Homepage } from './pages/HomePage';
+import { BlogPage } from './pages/BlogPage';
+import { About } from './pages/AboutPage';
+import { NotFoundPage } from './pages/NotFoundPage';
+import Post from './pages/Post';
+import CreatePost from './pages/CreatePost.jsx'
+import LoginPage from './pages/LoginPage';
+
+import Layout from './components/Layout';
+
+import RequireAuth from './hoc/RequireAuth';
+import AuthProvider from './hoc/AuthProvider';
+
+
+
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <AuthProvider>
+        <Routes>
+          <Route path='/' element={<Layout />}>
+            <Route index element={<Homepage />} />
+            <Route path='posts' element={<BlogPage />} />
+            <Route path='posts/new' element={
+              <RequireAuth>
+                <CreatePost />
+              </RequireAuth>
+            } />
+            <Route path='posts/:id' element={<Post />} />
+            <Route path='about' element={<About />} />
+            <Route path='about-us' element={<Navigate to='/about' replace />} />
+            <Route path='login' element={<LoginPage />} />
+            <Route path='*' element={<NotFoundPage />} />
+          </Route>
+        </Routes>
+      </AuthProvider>
+    </>
   );
 }
 
