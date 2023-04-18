@@ -9,8 +9,9 @@ export default function Layout() {
         <>
             <header>
                 <NavLink to="/" className={setActive}>Home</NavLink>
-                <NavLink to="/posts" className={({ isActive }) => isActive ? 'active-link' : ''}>Blog</NavLink>
-                <CustomLink to="/about">About</CustomLink>
+                <NavLink to="posts" className={({ isActive }) => isActive ? 'active-link' : ''}>Blog</NavLink>
+                <CustomLink to="about">About</CustomLink>
+                <CustomLink to="about2">About2</CustomLink>
             </header>
             <main className="container">
                 <Outlet />

@@ -3,7 +3,7 @@ import './App.css';
 
 import { Homepage } from './pages/HomePage';
 import { BlogPage } from './pages/BlogPage';
-import { About } from './pages/AboutPage';
+import { About, About2 } from './pages/AboutPage';
 import { NotFoundPage } from './pages/NotFoundPage';
 import Post from './pages/Post';
 import CreatePost from './pages/CreatePost.jsx'
@@ -31,7 +31,11 @@ function App() {
               </RequireAuth>
             } />
             <Route path='posts/:id' element={<Post />} />
-            <Route path='about' element={<About />} />
+            <Route path='about/*' element={<About />} />
+            <Route path='about2' element={<About2 />} >
+              <Route path="contacts" element={<p>Our contact</p>} />
+              <Route path="teams" element={<p>Our teams</p>} />
+            </Route>
             <Route path='about-us' element={<Navigate to='/about' replace />} />
             <Route path='login' element={<LoginPage />} />
             <Route path='*' element={<NotFoundPage />} />
