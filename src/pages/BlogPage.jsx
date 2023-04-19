@@ -1,15 +1,9 @@
-import { useEffect, useState } from "react"
-import { Link, useSearchParams } from "react-router-dom";
+import { Await, Link, defer, useLoaderData, useSearchParams } from "react-router-dom";
 import BlogFilter from "./BlogFilter";
+import { Suspense } from "react";
 
 const BlogPage = () => {
-    const [posts, setPosts] = useState(null);
-    useEffect(() => {
-        fetch('https://jsonplaceholder.typicode.com/posts')
-            .then(res => res.json())
-            .then(data => setPosts(data))
-    }, [])
-
+    const { posts } = useLoaderData();    // const [posts, setPosts] = useState(null);
     const [searchParams, setSearchParams] = useSearchParams();
 
     const queryParams = searchParams.get('search') || '';
@@ -22,20 +16,39 @@ const BlogPage = () => {
 
             <BlogFilter queryParams={queryParams} latestParams={searchParams.has('latest')} setSearchParams={setSearchParams} />
 
-            <ul>
-                {posts &&
-                    posts
-                        .filter(item => item.title.includes(queryParams) && item.id > latestParams)
-                        .map((post) => {
+            <Suspense fallback={<p>Loading posts....</p>}>
+                <Await resolve={posts}>
+                    {
+                        (resolvedPosts) => {
                             return (
-                                <li key={post.id}>
-                                    <Link to={`/posts/${post.id}`}>{post.title}</Link>
-                                </li>
+                                <ul>
+                                    {resolvedPosts
+                                        .filter(item => item.title.includes(queryParams) && item.id > latestParams)
+                                        .map((post) => {
+                                            return (
+                                                <li key={post.id}>
+                                                    <Link to={`/posts/${post.id}`}>{post.title}</Link>
+                                                </li>
+                                            );
+                                        })}
+                                </ul>
                             );
-                        })}
-            </ul>
+                        }
+                    }
+                </Await>
+            </Suspense>
         </div>
     )
 }
 
-export { BlogPage }
+async function getPosts() {
+    let res = await fetch('https://jsonplaceholder.typicode.com/posts');
+    let data = await res.json();
+    return data;
+}
+
+async function loader() {
+    return defer({ posts: getPosts() })
+}
+
+export { BlogPage, loader }
