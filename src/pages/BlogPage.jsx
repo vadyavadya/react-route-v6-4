@@ -43,6 +43,9 @@ const BlogPage = () => {
 
 async function getPosts() {
     let res = await fetch('https://jsonplaceholder.typicode.com/posts');
+    if (!res.ok) {
+        throw new Response('', { status: res.status, statusText: 'Not Found!!' });
+    }
     let data = await res.json();
     return data;
 }

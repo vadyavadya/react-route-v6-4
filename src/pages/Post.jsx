@@ -46,6 +46,9 @@ export default function Post() {
 async function getPost(id) {
     const response = await fetch(`https://jsonplaceholder.typicode.com/posts/${id}`);
     const data = await response.json();
+    if (!response.ok) {
+        throw new Response('', { status: response.status, statusText: 'Not Found!!' });
+    }
     return data;
 }
 
